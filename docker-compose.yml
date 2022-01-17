@@ -1,0 +1,25 @@
+version: '3.3'
+networks:
+    web1:
+        external: true
+    internal:
+        external: false
+services:
+    traefik:
+        volumes:
+            - '/var/run/docker.sock:/var/run/docker.sock'
+            - '/root/traefik2ban/traefik.toml:/traefik.toml'
+            - '/root/traefik2ban/acme.json:/acme.json'
+            - '/var/log/traefik:/var/log'
+        ports:
+            - '80:80'
+            - '443:443'
+        network_mode: web1
+        container_name: traefik2ban
+        image: 'traefik:1.7.2-alpine'
+        labels:
+           - traefik.frontend.rule=Host:traefik.asirbravo.site
+           - traefik.port=8080
+        command:
+           - --accessLog.filePath=/var/log/access.log
+           - --accessLog.filters.statusCodes=400-499

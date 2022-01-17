@@ -1,0 +1,39 @@
+defaultEntryPoints = ["http", "https"]
+
+[entryPoints]
+  [entryPoints.dashboard]
+    address = ":8080"
+    [entryPoints.dashboard.auth]
+      [entryPoints.dashboard.auth.basic]
+        users = ["frodo:$apr1$cylJB68f$yDUJJeU00PWXOPrOx7M0x/"]
+  [entryPoints.http]
+    address = ":80"
+      [entryPoints.http.redirect]
+        entryPoint = "https"
+  [entryPoints.https]
+    address = ":443"
+      [entryPoints.https.tls]
+
+[api]
+entrypoint="dashboard"
+
+[acme]
+email = "luiszas01@gmail.com"
+storage = "acme.json"
+entryPoint = "https"
+onHostRule = true
+  [acme.httpChallenge]
+  entryPoint = "http"
+
+[docker]
+domain = "asirbravo.site"
+watch = true
+network = "web1"
+
+[accessLog]
+  filePath = "/var/log/access.log"
+
+  [accessLog.filters]
+    statusCodes = ["400-499"]
+    retryAttempts = true
+    minDuration = "10ms"
